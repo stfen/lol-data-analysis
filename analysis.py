@@ -18,7 +18,7 @@ Goal: Analyze statistics from the first 10 minutes of League of Legends games
 ================================
 """
 
-df = pd.read_csv("high_diamond_ranked_10min.csv")
+df = pd.read_csv("data/high_diamond_ranked_10min.csv")
 
 print("Number of rows:", df.shape[0])
 print("Number of columns:", df.shape[1])
