@@ -108,14 +108,35 @@ plt.show()
 5. Histograms of all numeric features
 ================================
 """
+def classify_variable(col):
+    unique_vals = df[col].dropna().unique()
+    if df[col].dropna().isin([0, 1]).all():
+        return 'binary'
+    elif np.issubdtype(df[col].dtype, np.integer) and len(unique_vals) < 10:
+        return 'discrete'
+    else:
+        return 'continuous'
 
-for col in df_numeric.columns:
+var_types = {col: classify_variable(col) for col in df_numeric.columns}
+
+for col, var_type in var_types.items():
     plt.figure(figsize=(6, 4))
-    sns.histplot(df[col], kde=True, bins=30, color='skyblue')
+    
+    if var_type == 'binary':
+        sns.countplot(data=df, x=col, palette='coolwarm')
+        
+    elif var_type == 'discrete':
+        unique_vals = sorted(df[col].dropna().unique())
+        sns.countplot(data=df, x=col, palette='crest', order=unique_vals)
+        plt.xticks(ticks=range(len(unique_vals)), labels=unique_vals)
+        
+    else:  # continuous
+        sns.histplot(data=df, x=col, kde=True, bins=30, color='skyblue')
+
     plt.title(f"Distribution of: {col}")
     plt.xlabel(col)
     plt.tight_layout()
-    plt.savefig(f"figures/distribution/{col}.png")
+    plt.savefig(f"figures/distribution/{col}_{var_type}.png")
     plt.close()
 
 """
